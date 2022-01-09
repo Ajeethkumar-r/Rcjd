@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script
+      src="https://unpkg.com/react@17/umd/react.development.js"
+      crossorigin
+    ></script>
+    <script
+      src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"
+      crossorigin
+    ></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <title>React.js</title>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="text/babel">
+      class Counter extends React.Component {
+        constructor(props) {
+          super(props);
+          this.state = {
+            count: 0,
+          };
+        }
+
+        render() {
+          return (
+            <div>
+              <h1>{this.state.count} </h1>
+              <button onClick={this.increment}>Incerement</button>
+              <button onClick={this.decrement}>Decrement</button>
+              <button onClick={this.reset}>Reset</button>
+            </div>
+          );
+        }
+
+        increment = () => {
+          //purpose of oldState function is not to access the state directly - security using anonymous arrow function inside this.setState
+          this.setState((incState) => ({
+            count: incState.count + 1,
+          }));
+        };
+
+        decrement = () => {
+          this.setState((decState) => ({
+            count:
+              decState.count > 0 ? decState.count - 1 : (decState.count = 0),
+          }));
+        };
+
+        reset = () => {
+          this.setState((resState) => ({
+            count: (resState.count = 0),
+          }));
+        };
+      }
+
+      class App extends React.Component {
+        render() {
+          return (
+            <div>
+              <Counter />
+            </div>
+          );
+        }
+      }
+
+      ReactDOM.render(<App />, document.querySelector('#app'));
+    </script>
+  </body>
+</html>
