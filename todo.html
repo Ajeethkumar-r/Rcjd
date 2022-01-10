@@ -17,6 +17,13 @@
       #deltebtn {
         margin-right: 4px;
       }
+      #tasksText {
+        font-size: larger;
+      }
+      body {
+        margin-left: 45%;
+        margin-top: 10%;
+      }
     </style>
     <title>Todos</title>
   </head>
@@ -43,10 +50,14 @@
                   value={this.state.input}
                 />
                 <button onClick={this.addTodo}>Add Todo</button>
-                Number of Task: {this.state.tasks.length}
+                {this.state.tasks.length > 1 ? (
+                  <h3>Number of tasks : {this.state.tasks.length}</h3>
+                ) : (
+                  <h3>Number of task: {this.state.tasks.length}</h3>
+                )}
                 <ul>
                   {this.state.tasks.map((task, x) => (
-                    <li key={x}>
+                    <li key={x} id='tasksText'>
                       <input
                         data-index='i'
                         onClick={this.deleteHandler}
