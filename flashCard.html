@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script
+      src="https://unpkg.com/react@17/umd/react.development.js"
+      crossorigin
+    ></script>
+    <script
+      src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"
+      crossorigin
+    ></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+      tr,
+      td,
+      th {
+        border: 1px solid black;
+      }
+      table {
+        border-collapse: collapse;
+      }
+      th,
+      td {
+        padding: 10px;
+      }
+    </style>
+    <title>Flash Card</title>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="text/babel">
+      class CardEditor extends React.Component {
+        constructor(props) {
+          super(props);
+          this.state = {
+            front: '',
+            back: '',
+          };
+        }
+        render() {
+          // Final view - dynamic rows based on the front and back input
+          const rows = this.props.cards.map((card, i) => {
+            return (
+              <tr key={i}>
+                <td> {card.front} </td>
+                <td> {card.back} </td>
+                <td>
+                  {' '}
+                  <button data-index={i} onClick={this.deleteCard}>
+                    Delete
+                  </button>{' '}
+                </td>
+              </tr>
+            );
+          });
+          return (
+            <div>
+              Card-editor
+              <table>
+                <thead>
+                  <tr>
+                    <th>Front</th>
+                    <th>Back</th>
+                    <th>Delete</th>
+                  </tr>
+                </thead>
+                <tbody>{rows}</tbody>
+              </table>
+              <br />
+              {/* Using the value of front and back state changes  */}
+              <input
+                placeholder='front'
+                name='front'
+                value={this.state.front}
+                onChange={this.handleChange}
+              />
+              <input
+                placeholder='back'
+                name='back'
+                value={this.state.back}
+                onChange={this.handleChange}
+              />
+              {/* Using this button front and back state are added to the card */}
+              <button onClick={this.addCard}>Add Card</button>
+              <hr />
+              {/* siwtch to both edit and view mode */}
+              <button onClick={this.props.switchMode}>Go to Viewer</button>
+            </div>
+          );
+        }
+
+        // set  the state based on the change in inputs here we can also achieve this function using if else
+        handleChange = (event) => {
+          this.setState({
+            [event.target.name]: event.target.value,
+          });
+        };
+
+        // using the front and back state the card is added and then clear out the input field
+        addCard = () => {
+          this.props.addCard(this.state.front, this.state.back);
+          this.setState({
+            front: '',
+            back: '',
+          });
+        };
+        // index value of the card is passedto the deleteCard function in the App component
+        deleteCard = (event) => {
+          this.props.deleteCard(event.target.dataset.index);
+        };
+      }
+
+      class CardViewer extends React.Component {
+        render() {
+          return (
+            <div>
+              Card-viewer
+              <hr />
+              <button onClick={this.props.switchMode}>Go to editor</button>
+            </div>
+          );
+        }
+      }
+
+      class App extends React.Component {
+        constructor(props) {
+          super(props);
+          this.state = {
+            editor: true,
+            cards: [],
+          };
+        }
+
+        render() {
+          if (this.state.editor) {
+            return (
+              <CardEditor
+                cards={this.state.cards}
+                switchMode={this.switchMode}
+                addCard={this.addCard}
+                deleteCard={this.deleteCard}
+              />
+            );
+          } else {
+            return (
+              <CardViewer
+                cards={this.state.cards}
+                switchMode={this.switchMode}
+              />
+            );
+          }
+        }
+
+        switchMode = () => {
+          this.setState((state) => ({
+            editor: !state.editor,
+          }));
+        };
+
+        addCard = (front, back) => {
+          this.setState((state) => ({
+            cards: [...state.cards, { front, back }],
+          }));
+        };
+
+        deleteCard = (index) => {
+          this.setState((state) => {
+            const cards = [...state.cards];
+            cards.splice(index, 1);
+            return { cards };
+          });
+        };
+      }
+
+      ReactDOM.render(<App />, document.querySelector('#app'));
+    </script>
+  </body>
+</html>
